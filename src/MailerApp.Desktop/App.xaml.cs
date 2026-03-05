@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using MailerApp.Application.Campaigns;
 using MailerApp.Application;
 using MailerApp.Infrastructure;
 using MailerApp.Infrastructure.Data;
@@ -13,6 +14,7 @@ namespace MailerApp.Desktop;
 public partial class App : System.Windows.Application
 {
     private IServiceProvider? _serviceProvider;
+    private CancellationTokenSource? _sendLoopCts;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -38,7 +40,39 @@ public partial class App : System.Windows.Application
             var db = scope.ServiceProvider.GetRequiredService<MailerDbContext>();
             db.Database.Migrate();
         }
+        StartSendLoopInBackground();
         var mainWindow = new MainWindow(_serviceProvider);
         mainWindow.Show();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _sendLoopCts?.Cancel();
+        base.OnExit(e);
+    }
+
+    /// <summary>All-in-one: Desktop চালালেই ব্যাকগ্রাউন্ডে ইমেল সেন্ড লুপ চলে (আলাদা Worker চালানোর দরকার নেই)।</summary>
+    private void StartSendLoopInBackground()
+    {
+        _sendLoopCts = new CancellationTokenSource();
+        var token = _sendLoopCts.Token;
+        _ = Task.Run(async () =>
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    if (_serviceProvider != null)
+                    {
+                        using var scope = _serviceProvider.CreateScope();
+                        var engine = scope.ServiceProvider.GetRequiredService<SendEngineService>();
+                        await engine.ProcessPendingJobsAsync(10, token);
+                    }
+                }
+                catch (OperationCanceledException) { break; }
+                catch (Exception ex) { Log.Warning(ex, "Send loop error"); }
+                await Task.Delay(TimeSpan.FromSeconds(30), token);
+            }
+        }, token);
     }
 }

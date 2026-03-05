@@ -27,28 +27,20 @@ jobs:
           dotnet restore MailerApp.slnx
           dotnet build MailerApp.slnx -c Release --no-restore
 
-      - name: Publish Desktop (EXE)
+      - name: Publish (অল-ইন-ওয়ান EXE)
         run: |
           dotnet publish src/MailerApp.Desktop/MailerApp.Desktop.csproj -c Release -r win-x64 --self-contained -o publish/Desktop
         working-directory: .
 
-      - name: Publish Worker
-        run: |
-          dotnet publish src/MailerApp.Worker/MailerApp.Worker.csproj -c Release -r win-x64 --self-contained -o publish/Worker
-        working-directory: .
+      - name: Zip
+        run: Compress-Archive -Path publish/Desktop/* -DestinationPath MailerApp-win-x64.zip
 
-      - name: Zip Desktop
-        run: Compress-Archive -Path publish/Desktop/* -DestinationPath MailerApp-Desktop-win-x64.zip
-
-      - name: Zip Worker
-        run: Compress-Archive -Path publish/Worker/* -DestinationPath MailerApp-Worker-win-x64.zip
-
-      - name: Create Release and upload EXE
+      - name: Create Release – শুধু একটা EXE
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            MailerApp-Desktop-win-x64.zip
-            MailerApp-Worker-win-x64.zip
+          body: |
+            **একটাই অ্যাপ।** **MailerApp-win-x64.zip** ডাউনলোড করুন, আনজিপ করে `MailerApp.Desktop.exe` চালান। UI + ইমেল সেন্ড একসাথে।
+          files: MailerApp-win-x64.zip
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

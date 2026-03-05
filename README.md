@@ -2,6 +2,8 @@
 
 Windows email-sending desktop application (C# .NET, WPF) with Gmail OAuth/SMTP, contact lists, templates, campaigns, and a background send worker.
 
+**ব্যবহার গাইড (সব ফিচার + সহজ ভাষায়):** [docs/কিভাবে-ব্যবহার-করবেন.md](docs/কিভাবে-ব্যবহার-করবেন.md) – শুধু ডেস্কটপ EXE চালান, Worker নিয়ে ভাবতে হবে না।
+
 ## Requirements
 
 - .NET 10 SDK (or .NET 8+ with target adjustment)
@@ -32,15 +34,14 @@ Windows email-sending desktop application (C# .NET, WPF) with Gmail OAuth/SMTP, 
 
 ## Run
 
-1. **Desktop (UI)**  
+1. **অল-ইন-ওয়ান (ডেস্কটপই UI + সেন্ড)**  
    From repo root:
    ```bash
    dotnet run --project src/MailerApp.Desktop
    ```
-   Database and logs are under `%LocalAppData%\MailerApp`.
+   একটাই অ্যাপ চালালেই UI ও ইমেল সেন্ড লুপ দুটোই চলে। Database and logs under `%LocalAppData%\MailerApp`.
 
-2. **Worker (send queue)**  
-   Run in a separate terminal so sends are processed:
+2. **Worker আলাদা চালাতে চাইলে** (ঐচ্ছিক, যেমন অন্য মেশিনে):  
    ```bash
    dotnet run --project src/MailerApp.Worker
    ```
