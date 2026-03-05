@@ -1,0 +1,54 @@
+# ট্যাগ পুশ করলে (যেমন v1.0.0) অটো বিল্ড হয়ে Releases এ EXE জিপ আপলোড হবে।
+name: Create Release with EXE
+
+on:
+  push:
+    tags:
+      - 'v*'   # v1.0.0, v1.0.1 ইত্যাদি
+
+permissions:
+  contents: write   # রিলিজ বানানো ও অ্যাসেট আপলোডের জন্য
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore & Build
+        run: |
+          dotnet restore MailerApp.slnx
+          dotnet build MailerApp.slnx -c Release --no-restore
+
+      - name: Publish Desktop (EXE)
+        run: |
+          dotnet publish src/MailerApp.Desktop/MailerApp.Desktop.csproj -c Release -r win-x64 --self-contained -o publish/Desktop
+        working-directory: .
+
+      - name: Publish Worker
+        run: |
+          dotnet publish src/MailerApp.Worker/MailerApp.Worker.csproj -c Release -r win-x64 --self-contained -o publish/Worker
+        working-directory: .
+
+      - name: Zip Desktop
+        run: Compress-Archive -Path publish/Desktop/* -DestinationPath MailerApp-Desktop-win-x64.zip
+
+      - name: Zip Worker
+        run: Compress-Archive -Path publish/Worker/* -DestinationPath MailerApp-Worker-win-x64.zip
+
+      - name: Create Release and upload EXE
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            MailerApp-Desktop-win-x64.zip
+            MailerApp-Worker-win-x64.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
