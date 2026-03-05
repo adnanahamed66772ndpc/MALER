@@ -1,0 +1,61 @@
+<UserControl x:Class="MailerApp.Desktop.Views.AccountsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <TextBlock Text="Sender Accounts" Style="{StaticResource PageTitle}"/>
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Add account" Style="{StaticResource SectionTitle}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                    <Button Content="Add Gmail (OAuth)" Command="{Binding AddGmailOAuthCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,12,0"/>
+                    <Button Content="Add Gmail (SMTP)" Command="{Binding AddGmailSmtpCommand}" Style="{StaticResource SecondaryButton}"/>
+                </StackPanel>
+                <TextBlock Text="Add Gmail with App Password" Style="{StaticResource SectionTitle}"/>
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Name" Style="{StaticResource FieldLabel}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding NewSmtpName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}" Margin="0,0,0,12"/>
+                    <TextBlock Grid.Row="1" Text="Email" Style="{StaticResource FieldLabel}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewSmtpEmail, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}" Margin="0,0,0,12"/>
+                    <TextBlock Grid.Row="2" Text="App Password" Style="{StaticResource FieldLabel}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding NewSmtpPassword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}" Margin="0,0,0,12"/>
+                    <Button Grid.Row="3" Grid.Column="1" Content="Add SMTP account" Command="{Binding AddGmailSmtpCommand}" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+        <TextBlock Text="Your accounts" Style="{StaticResource SectionTitle}"/>
+        <Border Style="{StaticResource Card}" Padding="0">
+            <ListBox ItemsSource="{Binding Accounts}" BorderThickness="0" Background="Transparent" MinHeight="140">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#f8fafc" CornerRadius="6" Padding="16,12" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Margin="0,0,12,0"/>
+                                    <TextBlock Text="{Binding Email}" Foreground="{StaticResource TextMutedBrush}" FontSize="13"/>
+                                    <TextBlock Text="{Binding Provider}" Margin="12,0,0,0" Foreground="{StaticResource PrimaryBrush}" FontSize="12"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="Remove" Style="{StaticResource DangerButton}"
+                                        Command="{Binding DataContext.RemoveAccountCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        CommandParameter="{Binding}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+    </StackPanel>
+</UserControl>

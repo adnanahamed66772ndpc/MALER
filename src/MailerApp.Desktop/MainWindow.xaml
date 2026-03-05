@@ -1,0 +1,63 @@
+<Window x:Class="MailerApp.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:MailerApp.Desktop"
+        Title="Mailer App" Height="620" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource PageBgBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarBgBrush}" Padding="0,24,0,0">
+            <StackPanel>
+                <TextBlock Text="Mailer" FontSize="20" FontWeight="Bold" Foreground="{StaticResource SidebarTextBrush}"
+                           Margin="24,0,24,24" HorizontalAlignment="Center"/>
+                <ListBox x:Name="NavList" SelectionChanged="NavList_SelectionChanged"
+                         BorderThickness="0" Background="Transparent" Padding="8,0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{StaticResource SidebarTextBrush}"/>
+                            <Setter Property="Padding" Value="16,12"/>
+                            <Setter Property="Margin" Value="8,2"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="{StaticResource SidebarHoverBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="{StaticResource SidebarSelectedBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBoxItem Content="Accounts" Tag="Accounts"/>
+                    <ListBoxItem Content="Contacts" Tag="Contacts"/>
+                    <ListBoxItem Content="Templates" Tag="Templates"/>
+                    <ListBoxItem Content="Campaigns" Tag="Campaigns"/>
+                    <ListBoxItem Content="Dashboard" Tag="Dashboard"/>
+                    <ListBoxItem Content="Settings" Tag="Settings"/>
+                </ListBox>
+            </StackPanel>
+        </Border>
+        <!-- Content area -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      Padding="24" Background="{StaticResource PageBgBrush}">
+            <ContentControl x:Name="ContentArea"/>
+        </ScrollViewer>
+    </Grid>
+</Window>

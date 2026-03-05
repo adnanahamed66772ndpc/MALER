@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MailerApp.Application/MailerApp.Application.csproj" />
+    <Project Path="src/MailerApp.Desktop/MailerApp.Desktop.csproj" />
+    <Project Path="src/MailerApp.Domain/MailerApp.Domain.csproj" />
+    <Project Path="src/MailerApp.Infrastructure/MailerApp.Infrastructure.csproj" />
+    <Project Path="src/MailerApp.Worker/MailerApp.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MailerApp.Tests/MailerApp.Tests.csproj" />
+  </Folder>
+</Solution>
