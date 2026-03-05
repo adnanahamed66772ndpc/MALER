@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using MailerApp.Application.Contacts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 
 namespace MailerApp.Desktop.ViewModels;
@@ -63,7 +64,7 @@ public class ContactsViewModel : ViewModelBase
             LoadListsAsync();
             MessageBox.Show("List created.");
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message); }
+        catch (Exception ex) { MessageBox.Show(GetFullErrorMessage(ex), "Error"); }
     }
 
     private async void ImportCsvAsync()
@@ -78,6 +79,14 @@ public class ContactsViewModel : ViewModelBase
             MessageBox.Show($"Imported: {result.Imported}, Skipped: {result.Skipped}. Errors: {result.Errors.Count}");
             LoadContactsAsync();
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message); }
+        catch (Exception ex) { MessageBox.Show(GetFullErrorMessage(ex), "Error"); }
+    }
+
+    private static string GetFullErrorMessage(Exception ex)
+    {
+        if (ex is Microsoft.EntityFrameworkCore.DbUpdateException dbEx && dbEx.InnerException != null)
+            return dbEx.InnerException.Message;
+        var inner = ex.InnerException;
+        return inner != null ? $"{ex.Message}\n\nDetails: {inner.Message}" : ex.Message;
     }
 }

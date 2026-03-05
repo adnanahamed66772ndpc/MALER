@@ -1,0 +1,5 @@
+Email,FirstName,LastName,Company,Name
+john@example.com,John,Doe,Acme Inc,John Doe
+jane@example.com,Jane,Smith,Tech Co,Jane Smith
+bob@example.com,Bob,,,Bob
+
