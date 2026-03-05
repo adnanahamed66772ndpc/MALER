@@ -1,0 +1,59 @@
+# Git push করলে অটো বিল্ড হয়ে EXE তৈরি হবে। Artifacts থেকে ডাউনলোড করতে পারবেন।
+name: Build and publish EXE
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:  # ম্যানুয়ালি "Run workflow" দিয়ে চালাতে পারবেন
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore MailerApp.slnx
+
+      - name: Build
+        run: dotnet build MailerApp.slnx -c Release --no-restore
+
+      - name: Publish Desktop (EXE + সব ডিপেনডেন্সি)
+        run: |
+          dotnet publish src/MailerApp.Desktop/MailerApp.Desktop.csproj -c Release -r win-x64 --self-contained -o publish/Desktop
+        working-directory: .
+
+      - name: Publish Worker (optional - email send করার জন্য)
+        run: |
+          dotnet publish src/MailerApp.Worker/MailerApp.Worker.csproj -c Release -r win-x64 --self-contained -o publish/Worker
+        working-directory: .
+
+      - name: Zip Desktop (EXE সহ)
+        run: |
+          Compress-Archive -Path publish/Desktop/* -DestinationPath MailerApp-Desktop-win-x64.zip
+          echo "DESKTOP_ZIP=MailerApp-Desktop-win-x64.zip" >> $env:GITHUB_ENV
+
+      - name: Zip Worker
+        run: |
+          Compress-Archive -Path publish/Worker/* -DestinationPath MailerApp-Worker-win-x64.zip
+
+      - name: Upload Desktop EXE (ZIP)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MailerApp-Desktop-EXE
+          path: MailerApp-Desktop-win-x64.zip
+
+      - name: Upload Worker (ZIP)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MailerApp-Worker-EXE
+          path: MailerApp-Worker-win-x64.zip

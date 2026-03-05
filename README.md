@@ -7,6 +7,10 @@ Windows email-sending desktop application (C# .NET, WPF) with Gmail OAuth/SMTP, 
 - .NET 10 SDK (or .NET 8+ with target adjustment)
 - Windows (for DPAPI token encryption; fallback encryption on other OS)
 
+## Windows যাতে অ্যাপ ব্লক না করে (SmartScreen)
+
+অ্যাপে একটি **app manifest** যোগ করা আছে যাতে Windows অ্যাপটাকে সাধারণ ডেস্কটপ অ্যাপ হিসেবে চিনে। **পুরোপুরি ব্লক/সতর্কতা এড়াতে** EXE এবং ইনস্টলার **code sign** করুন (যেকোনো Code Signing Certificate দিয়ে)। বিস্তারিত: [docs/Windows-SmartScreen-And-Signing.md](docs/Windows-SmartScreen-And-Signing.md).
+
 ## Solution structure
 
 - **MailerApp.Desktop** – WPF UI (Accounts, Contacts, Templates, Campaigns, Dashboard, Settings)
@@ -15,6 +19,10 @@ Windows email-sending desktop application (C# .NET, WPF) with Gmail OAuth/SMTP, 
 - **MailerApp.Infrastructure** – EF Core SQLite, Gmail API/SMTP, token encryption
 - **MailerApp.Worker** – Background service that processes the send queue
 - **MailerApp.Tests** – Unit/integration tests
+
+## Git দিয়ে EXE তৈরি (GitHub Actions)
+
+কোড push করলেই GitHub অটো বিল্ড করে EXE তৈরি করবে। **Actions** ট্যাব → লেটেস্ট রান → **Artifacts** থেকে `MailerApp-Desktop-EXE` (ZIP) ডাউনলোড করুন। বিস্তারিত: [docs/Git-Build-EXE.md](docs/Git-Build-EXE.md).
 
 ## Run
 

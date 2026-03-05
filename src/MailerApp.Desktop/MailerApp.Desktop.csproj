@@ -20,6 +20,8 @@
     </None>
   </ItemGroup>
   <PropertyGroup>
+    <!-- Embed app manifest so Windows treats app as normal desktop app (asInvoker, Win10/11 compatible). Helps reduce SmartScreen suspicion. -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
