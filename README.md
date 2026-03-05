@@ -26,8 +26,9 @@ Windows email-sending desktop application (C# .NET, WPF) with Gmail OAuth/SMTP, 
 
 ## Releases এ EXE (ডাউনলোড লিংক)
 
-**Releases** পেজে EXE দেখাতে: ভার্সন ট্যাগ পুশ করুন (যেমন `v1.0.0`)। অটো বিল্ড হয়ে রিলিজে **MailerApp-Desktop-win-x64.zip** আপলোড হবে।  
-কমান্ড: `git tag v1.0.0` তারপর `git push origin v1.0.0`। বিস্তারিত: [docs/Releases-EXE.md](docs/Releases-EXE.md).
+- **প্রতিটি push:** main এ push করলেই নতুন রিলিজ তৈরি হবে (Build 1, Build 2, …) এবং তাতে নতুন EXE জিপ আপলোড হবে।
+- **ভার্সন রিলিজ:** ট্যাগ পুশ করলে (যেমন `git tag v1.0.0` তারপর `git push origin v1.0.0`) সেই ভার্সনের রিলিজে EXE যাবে।  
+বিস্তারিত: [docs/Releases-EXE.md](docs/Releases-EXE.md).
 
 ## Run
 
